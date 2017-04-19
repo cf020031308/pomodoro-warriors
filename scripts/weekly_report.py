@@ -15,13 +15,14 @@ import subprocess
 import jinja2
 
 import utils
-from settings import AUTHOR, MAIL_SERVER, MAIL_ACCOUNT, MAIL_TO, MAIL_CC
+from settings import (
+    WEEKLY_FILTER,
+    AUTHOR, MAIL_SERVER, MAIL_ACCOUNT, MAIL_TO, MAIL_CC)
 
 
 UDA_TRACKED = 'tracked'
 MAIL_DATE_FMT = '%Y%m%d'
 FILTER_DATE_FMT = '%Y-%m-%d'
-COMMON_FILTER = '+work project.not:weekly_report project.not:conference'
 
 now = int(time.time())
 today = datetime.date.today()
@@ -39,14 +40,14 @@ else:
     filter_startdate = today - datetime.timedelta(days=today.weekday())
 filter_starttime = int(time.mktime(filter_startdate.timetuple()))
 
-dones = utils.get_modified_tasks(filter_starttime, filter=COMMON_FILTER)
+dones = utils.get_modified_tasks(filter_starttime, filter=WEEKLY_FILTER)
 
 # todos: scheduled tasks before next weekend by projects
 _filter = '+PENDING scheduled.before:%s' % (
     today + datetime.timedelta(days=14 - today.weekday())
 ).strftime(FILTER_DATE_FMT)
 todos = json.loads(commands.getoutput(
-    'task %s %s export' % (COMMON_FILTER, _filter)))
+    'task %s %s export' % (WEEKLY_FILTER, _filter)))
 
 
 # generate mail subject and content
@@ -67,15 +68,11 @@ msg['Subject'] = (
         ).strftime(MAIL_DATE_FMT))
 ).encode('utf8')
 msg.set_payload(jinja2.Template(u'''
-{%- macro to_hour(time) %}
-{%- if time > 0 %} [{{ (time / 3600.0) | round(precision=2) }}h]{% endif %}
-{%- endmacro -%}
-
-本周工作{{ to_hour(dones | sum(attribute='active_duration')) }}:
+本周工作:
   {%- for project, tasks in dones | groupby(attribute='project') %}
-  * {{ project }}{{ to_hour(tasks | sum(attribute='active_duration')) }}
+  * {{ project }}
     {%- for task in tasks | sort(attribute='modified') %}
-    - {{ task.description }}{{ to_hour(task.active_duration) }}
+    - {{ task.description }}
     {%- endfor %}
   {%- endfor %}
 

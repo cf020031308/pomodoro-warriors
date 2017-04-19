@@ -6,7 +6,7 @@ import requests
 from settings import TIMESHEET_ACCOUNT, TIMESHEET_HOST
 
 
-class Proxy(object):
+class proxy(object):
     def __init__(self, func):
         self.func = func
 
@@ -14,7 +14,7 @@ class Proxy(object):
         def func(url, params=None, **kwargs):
             return self.func(
                 'http://%s%s' % (owner.HOST, url),
-                params,
+                params=params,
                 headers=dict(
                     kwargs.pop('headers', {}),
                     Authorization='Bearer %s' % instance.token),
@@ -26,8 +26,8 @@ class TimeSheet(object):
     HOST = TIMESHEET_HOST
     _TOKEN = None
 
-    GET = Proxy(requests.get)
-    POST = Proxy(requests.post)
+    GET = proxy(requests.get)
+    POST = proxy(requests.post)
 
     @property
     def token(self):
@@ -55,11 +55,6 @@ class TimeSheet(object):
             data.update(
                 projectId='self_define_project_id',
                 projectName='etc')
-        if 'y' != raw_input(
-                '%s\nconfirm?[y]' %
-                json.dumps(
-                    data, indent=2, sort_keys=True, ensure_ascii=False)):
-            return
         resp = self.POST('/daily', data=data)
         assert 200 <= resp.status_code < 300, (
             resp.status_code, resp.headers, resp.content)
