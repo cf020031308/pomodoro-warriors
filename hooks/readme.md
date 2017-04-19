@@ -1,0 +1,95 @@
+## the triggered hooks and inputs/outputs when adding/modifying task(s)
+
+```
+# [1] task task1,task2 modify ...
+# [2] task add task3
+# [3] task next
+# 
+#                                +---------------------+
+#                                |       on-add        |
+#                                | [stdin]             |
+#                                | added task3 json    |
+#                                | [stdout]            |
+#                                | added task3 json    |
+#                                | feedback text       | ---------+
+#                                +---------------------+          |
+#                                  ^                              |
+#                                  | [2]                          |
+#                                  |                              |
+# +---------------------+        +---------------------+          |
+# |      on-modify      |        |                     |          |
+# | [stdin]             |        |                     |          |
+# | original task2 json |        |      on-launch      |          |
+# | modified task2 json |        | [stdout]            |          |
+# | [stdout]            |        | feedback text       |          |
+# | modified task2 json |  [1]   |                     |          |
+# | feedback text       | <----- |                     | -+       |
+# +---------------------+        +---------------------+  |       |
+#   |                              |                      |       |
+#   |                              | [1]                  |       |
+#   |                              v                      |       |
+#   |                            +---------------------+  |       |
+#   |                            |      on-modify      |  |       |
+#   |                            | [stdin]             |  |       |
+#   |                            | original task1 json |  |       |
+#   |                            | modified task1 json |  |       |
+#   |                            | [stdout]            |  |       |
+#   |                            | modified task1 json |  |       |
+#   |                            | feedback text       |  |       |
+#   |                            +---------------------+  |       |
+#   |                              |                      |       |
+#   |                              | [1]                  | [3]   | [2]
+#   |                              v                      v       v
+#   |                            +-------------------------------------+
+#   |                            |               on-exit               |
+#   |                     [1]    | [stdout]                            |
+#   +--------------------------> | feedback text                       |
+#                                +-------------------------------------+
+
+digraph {
+    label="[1] task task1,task2 modify ...\l[2] task add task3\l[3] task next"
+    labeljust=l;
+    launch [label="
+        on-launch
+        \l[stdout]
+        \lfeedback text
+    "];
+    task1 [label="
+        on-modify
+        \l[stdin]
+        \loriginal task1 json
+        \lmodified task1 json
+        \l[stdout]
+        \lmodified task1 json
+        \lfeedback text
+    "];
+    task2 [label="
+        on-modify
+        \l[stdin]
+        \loriginal task2 json
+        \lmodified task2 json
+        \l[stdout]
+        \lmodified task2 json
+        \lfeedback text
+    "];
+    task3 [label="
+        on-add
+        \l[stdin]
+        \ladded task3 json
+        \l[stdout]
+        \ladded task3 json
+        \lfeedback text
+    "];
+    exit [label="
+        on-exit
+        \l[stdout]
+        \lfeedback text
+    "]
+    edge [label="[1]"];
+    launch -> {task1 task2} -> exit;
+    edge [label="[2]"];
+    launch -> task3 -> exit;
+    edge [label="[3]"];
+    launch -> exit;
+}
+```

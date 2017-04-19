@@ -1,0 +1,32 @@
+include ~/OneDrive/task/holidays.rc
+verbose=label,new-id
+bulk=0
+search.case.sensitive=no
+weekstart=Monday
+calendar.details=full
+calendar.holidays=full
+
+uda.tracked.type=string
+uda.tracked.label=Tracked
+uda.stopat.type=date
+uda.stopat.label=StopAt
+
+report.inbox.description=""
+report.inbox.columns=id,tags,description
+report.inbox.filter=status:pending -PROJECT
+report.inbox.sort=entry-
+
+report.tiny.description="a next-like tiny report to display in tiny panels"
+report.tiny.columns=id,project,description.truncated_count
+report.tiny.labels=ID,Project,Description
+report.tiny.filter=status:pending limit:page
+report.tiny.sort=urgency-
+default.command=tiny
+
+report.last.description="the recent modified pending tasks"
+report.last.columns=id,description.truncated
+report.last.filter=status:pending limit:page
+report.last.sort=modified-
+
+# placeholders for DIY commands
+report.continue.columns=
