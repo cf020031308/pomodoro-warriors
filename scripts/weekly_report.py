@@ -2,6 +2,7 @@
 # generate weekly report by the use of taskwarrior
 
 import os
+import sys
 import time
 import json
 import email
@@ -31,7 +32,9 @@ today = datetime.date.today()
 dirname = os.path.dirname(os.path.realpath(__file__))
 mail_path = os.path.join(dirname, '.report.eml')
 mail_swp_path = os.path.join(dirname, '.report_tmp.eml')
-if os.path.exists(mail_path):
+if len(sys.argv) > 1:
+    filter_startdate = datetime.datetime.strptime(sys.argv[1], MAIL_DATE_FMT)
+elif os.path.exists(mail_path):
     with open(mail_path) as f:
         filter_startdate = datetime.datetime.strptime(
             email.message_from_file(f)['Subject'].strip().rsplit('~', 1)[-1],
