@@ -61,10 +61,11 @@ msg['Subject'] = (
     u'[周报][%s]%s~%s' % (
         AUTHOR,
         datetime.datetime.fromtimestamp(
-            min(task[UDA_TRACKED][0][0] for task in dones)
+            min(task[UDA_TRACKED][0][0] for task in dones if task[UDA_TRACKED])
         ).strftime(MAIL_DATE_FMT),
         datetime.datetime.fromtimestamp(
-            max(task[UDA_TRACKED][-1][1] for task in dones)
+            max(task[UDA_TRACKED][-1][1]
+                for task in dones if task[UDA_TRACKED])
         ).strftime(MAIL_DATE_FMT))
 ).encode('utf8')
 msg.set_payload(jinja2.Template(u'''
