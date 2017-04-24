@@ -96,6 +96,10 @@ def timew():
         cmd = 'stop %s' % utcnow
     elif COMMAND == START and task.get('project'):
         cmd = 'start %s "%s"' % (task['start'], task['project'])
+        try:
+            cmd = cmd.encode('utf8')
+        except:
+            pass
     else:
         return
 
