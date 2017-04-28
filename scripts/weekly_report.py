@@ -106,7 +106,10 @@ try:
     smtp.login(*MAIL_ACCOUNT)
     smtp.sendmail(
         msg['From'],
-        [cc.rstrip(email.utils.COMMASPACE) for cc in msg['To'].split()],
+        [
+            addr.rstrip(email.utils.COMMASPACE)
+            for field in ('To', 'Cc')
+            for addr in msg[field].split()],
         msg.as_string())
     smtp.quit()
     os.rename(mail_swp_path, mail_path)

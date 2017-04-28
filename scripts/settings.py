@@ -14,7 +14,7 @@ MAIL_CC = []
 DAILY_FILTER = '+work'
 TIMESHEET_HOST = ''
 TIMESHEET_ACCOUNT = {'username': '', 'password': ''}
-PROJECTS2TIMESHEET_IDS = {}
+TIMESHEET_MAP = {}
 
 
 path = os.path.join(

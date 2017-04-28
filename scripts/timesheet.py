@@ -25,6 +25,7 @@ class proxy(object):
 class TimeSheet(object):
     HOST = TIMESHEET_HOST
     _TOKEN = None
+    _PROJECTS = None
 
     GET = proxy(requests.get)
     POST = proxy(requests.post)
@@ -41,20 +42,25 @@ class TimeSheet(object):
 
     @property
     def projects(self):
-        return self.GET('/project').json()
+        if not TimeSheet._PROJECTS:
+            TimeSheet._PROJECTS = {
+                project[field]: project
+                for project in self.GET('/project').json()
+                for field in ('projectId', 'projectName')}
+        return TimeSheet._PROJECTS
 
-    def put(self, date, projectId, hours, content):
+    def put(self, date, project, hours, content):
+        assert not (float(hours) % 0.25), (
+            'value of working hours should be times of 0.25')
         data = {
+            'project': None,
             'date': date.strftime('%Y-%m-%d'),
-            'hours': hours,
-            'content': content,
-            'hasSold': 0}
-        if projectId:
-            data['projectId'] = projectId
-        else:
-            data.update(
-                projectId='self_define_project_id',
-                projectName='etc')
+            'hours': str(hours),
+            'projectId': self.projects.get(
+                project, {}).get('projectId', 'self_define_project_id'),
+            'projectName': self.projects.get(
+                project, {}).get('projectName', project),
+            'content': content}
         resp = self.POST('/daily', data=data)
         assert 200 <= resp.status_code < 300, (
             resp.status_code, resp.headers, resp.content)

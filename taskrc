@@ -10,6 +10,8 @@ uda.tracked.type=string
 uda.tracked.label=Tracked
 uda.stopat.type=date
 uda.stopat.label=StopAt
+uda.jira.type=string
+uda.jira.label=Jira
 
 report.inbox.description=""
 report.inbox.columns=id,tags,description
@@ -17,8 +19,8 @@ report.inbox.filter=status:pending -PROJECT
 report.inbox.sort=entry-
 
 report.tiny.description="a next-like tiny report to display in tiny panels"
-report.tiny.columns=id,project,description.truncated_count
-report.tiny.labels=ID,Project,Description
+report.tiny.columns=id,project,jira,description.truncated_count
+report.tiny.labels=ID,Project,Jira,Description
 report.tiny.filter=status:pending limit:page
 report.tiny.sort=urgency-
 default.command=tiny
