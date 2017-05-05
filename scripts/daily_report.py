@@ -44,7 +44,9 @@ def daily_report(date=None, scale_to=8, hours_unit=0.25):
         logs.append((
             project,
             sum(task[h] for task in ts) / 3600.0,
-            '\n'.join(task['description'] for task in ts)))
+            '\n'.join(
+                '%s [%.2fh]' % (task['description'], task[h] / 3600.0)
+                for task in ts)))
 
     n, remainder = len(logs), 0.0
     for i, (project, hours, content) in enumerate(
