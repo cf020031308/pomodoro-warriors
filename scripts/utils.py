@@ -2,6 +2,7 @@ import json
 import time
 import datetime
 import commands
+from collections import OrderedDict
 
 
 UDA_TRACKED = 'tracked'
@@ -21,7 +22,7 @@ def get_modified_tasks(starttime, endtime=0, filter=''):
             filter,
             datetime.datetime.fromtimestamp(starttime).strftime(
                 '%Y-%m-%dT%H:%M:%S')))
-    tasks = []
+    tasks = OrderedDict()
     for task in json.loads(output):
         tracked = task.get(UDA_TRACKED, '')
         assert not(len(tracked) % 6), 'wrong UDA format: %s' % str(task)
@@ -39,5 +40,5 @@ def get_modified_tasks(starttime, endtime=0, filter=''):
             if utc2time(task['modified']) > endtime:
                 continue
         task['active_duration'] = sum((y - x) for x, y in task[UDA_TRACKED])
-        tasks.append(task)
-    return tasks
+        tasks[task['uuid']] = task
+    return tasks.values()
