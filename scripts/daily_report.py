@@ -23,17 +23,18 @@ def daily_report(date=None, scale_to=8, hours_unit=0.25):
     # scale to 8 hours :)
     if scale_to:
         scale_to *= 3600.0
-        ratio = (
-            scale_to - sum(
-                task[h] for task in tasks
-                if task['project'] not in TIMESHEET_MAP)
-        ) / sum(
-            task[h] for task in tasks
-            if task['project'] in TIMESHEET_MAP)
+        scales, no_scales = [], 0
+        for task in tasks:
+            if (
+                    'noscale' in task['tags'] or
+                    task['project'] not in TIMESHEET_MAP):
+                no_scales += task[h]
+            else:
+                scales.append(task)
+        ratio = (scale_to - no_scales) / sum(task[h] for task in scales)
         if ratio > 1:
-            for task in tasks:
-                if task['project'] in TIMESHEET_MAP:
-                    task[h] *= ratio
+            for task in scales:
+                task[h] *= ratio
 
     # put to timesheet
     def key(task):
