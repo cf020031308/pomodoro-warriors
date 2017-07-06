@@ -1,25 +1,23 @@
 # coding: utf8
 # generate weekly report by the use of taskwarrior
 
-import os
-import sys
-import time
-import json
+import commands
+import datetime
 import email
 import email.message
+import json
+import os
 import smtplib
-import datetime
-import commands
-import traceback
 import subprocess
+import sys
+import time
+import traceback
 
 import jinja2
 
 import utils
-from settings import (
-    WEEKLY_FILTER,
-    AUTHOR, MAIL_SERVER, MAIL_ACCOUNT, MAIL_TO, MAIL_CC)
-
+from settings import (AUTHOR, MAIL_ACCOUNT, MAIL_CC, MAIL_SERVER, MAIL_TO,
+                      WEEKLY_FILTER)
 
 UDA_TRACKED = 'tracked'
 MAIL_DATE_FMT = '%Y%m%d'
@@ -28,19 +26,22 @@ FILTER_DATE_FMT = '%Y-%m-%d'
 now = int(time.time())
 today = datetime.date.today()
 
-# dones: doing/done tasks from ((last_report_day + 1) or this_monday) on
+# dones: doing/done tasks from input_day/last_report_day + 1/this_monday on
 dirname = os.path.dirname(os.path.realpath(__file__))
 mail_path = os.path.join(dirname, '.report.eml')
 mail_swp_path = os.path.join(dirname, '.report_tmp.eml')
 if len(sys.argv) > 1:
     filter_startdate = datetime.datetime.strptime(sys.argv[1], MAIL_DATE_FMT)
 elif os.path.exists(mail_path):
-    with open(mail_path) as f:
-        filter_startdate = datetime.datetime.strptime(
-            email.message_from_file(f)['Subject'].strip().rsplit('~', 1)[-1],
-            MAIL_DATE_FMT) + datetime.timedelta(days=1)
-else:
-    filter_startdate = today - datetime.timedelta(days=today.weekday())
+    try:
+        with open(mail_path) as f:
+            filter_startdate = datetime.datetime.strptime(
+                email.message_from_file(f)['Subject'].strip().rsplit('~', 1)[-1],
+                MAIL_DATE_FMT) + datetime.timedelta(days=1)
+    except:
+        pass
+filter_startdate = filter_startdate or (
+    today - datetime.timedelta(days=today.weekday()))
 filter_starttime = int(time.mktime(filter_startdate.timetuple()))
 
 dones = utils.get_modified_tasks(filter_starttime, filter=WEEKLY_FILTER)
@@ -108,8 +109,8 @@ try:
         msg['From'],
         [
             addr.rstrip(email.utils.COMMASPACE)
-            for field in ('To', 'Cc')
-            for addr in msg[field].split()],
+            for field in ('To', 'Cc') if msg[field]
+            for addr in msg[field].split() if addr],
         msg.as_string())
     smtp.quit()
     os.rename(mail_swp_path, mail_path)
