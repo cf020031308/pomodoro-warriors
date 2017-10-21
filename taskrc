@@ -7,9 +7,6 @@ calendar.details=full
 calendar.holidays=sparse
 include ~/OneDrive/task/holidays.rc
 
-context.work=+work
-context.home=-work
-
 uda.tracked.type=string
 uda.tracked.label=Tracked
 uda.stopat.type=date
@@ -29,3 +26,4 @@ report.last.sort=modified-
 
 # placeholders for DIY commands
 report.continue.columns=
+report.split.columns=
