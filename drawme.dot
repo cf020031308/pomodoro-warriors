@@ -1,3 +1,4 @@
+/*
 ## the triggered hooks and inputs/outputs when adding/modifying task(s)
 
 ```
@@ -46,3 +47,51 @@
 #   +--------------------------> | feedback text                       |
 #                                +-------------------------------------+
 ```
+*/
+
+digraph {
+    label="[1] task task1,task2 modify ...\l[2] task add task3\l[3] task next"
+    labeljust=l;
+    launch [label="
+        on-launch
+        \l[stdout]
+        \lfeedback text
+    "];
+    task1 [label="
+        on-modify
+        \l[stdin]
+        \loriginal task1 json
+        \lmodified task1 json
+        \l[stdout]
+        \lmodified task1 json
+        \lfeedback text
+    "];
+    task2 [label="
+        on-modify
+        \l[stdin]
+        \loriginal task2 json
+        \lmodified task2 json
+        \l[stdout]
+        \lmodified task2 json
+        \lfeedback text
+    "];
+    task3 [label="
+        on-add
+        \l[stdin]
+        \ladded task3 json
+        \l[stdout]
+        \ladded task3 json
+        \lfeedback text
+    "];
+    exit [label="
+        on-exit
+        \l[stdout]
+        \lfeedback text
+    "]
+    edge [label="[1]"];
+    launch -> {task1 task2} -> exit;
+    edge [label="[2]"];
+    launch -> task3 -> exit;
+    edge [label="[3]"];
+    launch -> exit;
+}
