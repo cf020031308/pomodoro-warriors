@@ -6,6 +6,7 @@ import yaml
 WEEKLY_FILTER = '+work project.not:miscellaneous'
 
 AUTHOR = ''
+MAIL_FILE = '/tmp/ks_mail.eml'
 MAIL_SERVER = ['smtp.163.com', 465]
 MAIL_ACCOUNT = ['cf020031308@163.com', '']
 MAIL_TO = ['cf020031308@163.com']

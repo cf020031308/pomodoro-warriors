@@ -15,6 +15,15 @@ POMODORO_BURST = 4
 POMODORO_ABORT = 2
 POMODORO_COMBO = 12
 
+TIMESHEET_HOST = ''
+TIMESHEET_ACCOUNT = {'username': '', 'password': ''}
+TIMESHEET_MAP = {}
+
+MAIL_AUTHOR = ''
+MAIL_SERVER = ['smtp.163.com', 465]
+MAIL_ACCOUNT = ['cf020031308@163.com', '']
+MAIL_TO = ['cf020031308@163.com']
+MAIL_CC = []
 
 # load settings from yaml
 ypath = os.path.join(

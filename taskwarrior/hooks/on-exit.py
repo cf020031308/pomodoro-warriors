@@ -64,13 +64,13 @@ def main():
         # task <id> timew ...
         pre, timew = args.split(cmd, 1)
         _id = int(pre.split()[1])
-        tags, proj, desc = commands.getoutput(
-            'task _get %s.{tags,project,description}' % _id).split(' ', 2)
+        tags, proj, uuid = commands.getoutput(
+            'task _get %s.{tags,project,uuid}' % _id).split(' ', 2)
         tags = [t for t in tags.split(',') if t not in RESERVED_TAGS]
         while proj:
             tags.append(proj)
             proj = proj.rpartition('.')[0]
-        tags.append(desc)
+        tags.append(uuid)
         tags = ' '.join('"%s"' % t for t in tags)
         os.system('timew %s %s' % (timew, tags))
     elif cmd == 'pomodoro':

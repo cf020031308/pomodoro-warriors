@@ -37,7 +37,7 @@ class TimeSheet(object):
                 'http://%s/auth/login' % self.HOST,
                 data=TIMESHEET_ACCOUNT
             ).json()['token']
-        assert TimeSheet._TOKEN
+            assert TimeSheet._TOKEN
         return TimeSheet._TOKEN
 
     @property

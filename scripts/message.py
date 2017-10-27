@@ -8,13 +8,13 @@ msgs = []
 
 
 # Pomodoro
-pomo = json.loads(commands.getoutput('timew pomostat'))
-if pomo['status'] == 'BURST':
+pomos = json.loads(commands.getoutput('timew pomos :day'))
+if pomos['status'] == 'BURST':
     msgs.append('POMO: Complete')
-elif pomo['status'] == 'INACTIVE':
-    msgs.append('POMO: Achieved - %(achieved)d, Combo - %(combo)d' % pomo)
-elif pomo['status'] == 'BREAK':
-    msgs.append('NEXT POMO: %ds' % int(pomo['rest']))
+elif pomos['status'] == 'INACTIVE':
+    msgs.append('POMO: Achieved - %(achieved)d, Combo - %(combo)d' % pomos)
+elif pomos['status'] != 'BREAK':
+    msgs.append('POMO: %(status)s' % pomos)
 
 
 # Due
