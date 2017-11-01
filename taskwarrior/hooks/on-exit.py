@@ -1,47 +1,16 @@
 #!/usr/bin/python
 
 import os
-import sys
-import json
 import commands
+
+import utils
 
 
 RESERVED_TAGS = set('nocolor nonag nocal next'.split())
 
 
-def format_inputs():
-    '''
-    // returned inputs example
-
-    {
-        "version": "2.5.1",
-        "api": "2",
-        "rc": "~/.taskrc",
-        "data": "~/.task/work",
-        "filename": "on-exit_print.py",
-        "command": "undo",
-        "args": "task undo",
-        "prior": {},  // exists only in on-modify scripts
-        "task": {}  // exists only in on-add/on-modify scripts
-    }
-    '''
-    inputs = dict(arg.split(':', 1) for arg in sys.argv[1:])
-    assert inputs['api'] == '2', 'API: %s is not supported' % inputs['api']
-
-    filename = os.path.split(sys.argv[0])[-1]
-    inputs['filename'] = filename
-
-    if filename.startswith('on-add'):
-        inputs['task'] = json.load(sys.stdin)
-    elif filename.startswith('on-modify'):
-        inputs['prior'] = json.loads(sys.stdin.readline())
-        inputs['task'] = json.loads(sys.stdin.readline())
-
-    return inputs
-
-
 def main():
-    inputs = format_inputs()
+    inputs = utils.format_inputs()
     args, cmd = inputs['args'], inputs['command']
     if cmd == 'split':
         # task <id> split <mods>

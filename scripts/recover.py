@@ -9,9 +9,16 @@ from backlog.data.
 
 import os
 import json
+import time
+import datetime
 from collections import OrderedDict
 
-from utils import utc2time
+
+def utc2time(date):
+    return int(
+        time.mktime(
+            datetime.datetime.strptime(date, '%Y%m%dT%H%M%SZ').timetuple()) -
+        time.timezone)
 
 
 def recover(input_folder, output_folder=None):

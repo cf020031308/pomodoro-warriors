@@ -7,9 +7,12 @@ calendar.details=full
 calendar.holidays=sparse
 include ~/OneDrive/task/holidays.rc
 
+uda.estimate.type=duration
+uda.estimate.label=Estimate
+
 report.tiny.description="a next-like tiny report to display in tiny panels"
-report.tiny.columns=id,project,priority,description.truncated_count
-report.tiny.labels=ID,Project,P,Description
+report.tiny.columns=id,project,estimate,description.truncated_count
+report.tiny.labels=ID,Project,E,Description
 report.tiny.filter=status:pending limit:page
 report.tiny.sort=urgency-
 default.command=tiny

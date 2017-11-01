@@ -2,12 +2,14 @@
 
 import json
 import datetime
+import commands
 
 import utils
 from utils import settings
 
 
-def pomos(entries):
+def main():
+    _, entries = utils.format_inputs()
     ret = {
         'status': 'INACTIVE',  # ACTIVE|BURST|INACTIVE|BREAK
         'seconds': 0.0,        # Total tracking seconds in Pomodoro Mode
@@ -25,9 +27,23 @@ def pomos(entries):
 
         start = utils.parse_utc(entry['start'])
         if 'end' not in entry:
-            ret['status'] = (
-                'BURST' if seconds > settings.POMODORO_INTERVAL * 60
-                else 'ACTIVE')
+            if seconds > settings.POMODORO_INTERVAL * 60:
+                ret['status'] = 'BURST'
+            else:
+                for tag in entry['tags']:
+                    if not utils.is_uuid[tag]:
+                        continue
+                    task = json.loads(
+                        commands.getoutput('task uuid:%s export' % tag))
+                    task = task[0] if task else {}
+                    desc = (
+                        task
+                        .get('annotations', [{}])[-1]
+                        .get('description', task['description']))
+                    ret['status'] = 'ACTIVE: %s' % desc
+                    break
+                else:
+                    ret['status'] = 'ACTIVE'
             ret['seconds'] += seconds + (now - start).total_seconds()
             return ret
 
@@ -56,14 +72,13 @@ def pomos(entries):
             settings.POMODORO_SHORT_BREAK
             if ret['combo'] < settings.POMODORO_BURST
             else settings.POMODORO_LONG_BREAK))
-        if now > break2:
+        if (now - break2).total_seconds() > settings.POMODORO_COMBO * 60:
+            ret['max_combo'] = max(ret['max_combo'], ret['combo'])
+            ret['combo'] = 0
+        else:
             ret['status'] = break2.strftime('BREAK TO %H:%M:%S')
-            if (now - break2).total_seconds() > settings.POMODORO_COMBO * 60:
-                ret['max_combo'] = max(ret['max_combo'], ret['combo'])
-                ret['combo'] = 0
 
-    return ret
+    print json.dumps(ret, indent=2, sort_keys=True)
 
 
-if __name__ == '__main__':
-    print json.dumps(pomos(utils.format_inputs()[1]), indent=2, sort_keys=True)
+main()
