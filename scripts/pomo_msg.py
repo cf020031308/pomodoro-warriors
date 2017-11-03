@@ -4,10 +4,6 @@ import json
 import commands
 
 
-msgs = []
-
-
-# Pomodoro
 pomos = json.loads(commands.getoutput('timew pomos :day'))
 if pomos['status'] == 'BURST':
     print '[POMO] Complete'
