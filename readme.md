@@ -9,10 +9,6 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 * Do in Pomodoro Mode.
 * Review and report in various ways.
 
-## Status
-
-This repo is in debugging.
-
 ## Features
 
 * [x] `task <filter>` or `task <filter> tiny`. Display tasks in tiny spaces like panes in tmux.
@@ -81,7 +77,7 @@ You can also get your stat data by `timew pomos [<interval>] [<tag> ...]`.
 If you are using [tmux](https://github.com/tmux/tmux) you can append the following line to `~/.tmux.conf`:
 
 ```bash
-set-option -g status-left "#(python ~/path/to/pomodoro-warriors/scripts/pomo_msg.py)"
+set-option -g status-left "#(timew pomo_status.py :day)"
 ```
 
 If you are using [powerline](https://github.com/powerline/powerline) you can add this to the segments:
@@ -91,7 +87,7 @@ If you are using [powerline](https://github.com/powerline/powerline) you can add
     "function": "powerline.lib.shell.run_cmd",
     "priority": 80,
     "args": {
-        "cmd": ["sh", "-c", "python ~/path/to/pomodoro-warriors/scripts/pomo_msg.py"]
+        "cmd": ["timew", "pomo_status.py", ":day"]
     }
 }
 ```

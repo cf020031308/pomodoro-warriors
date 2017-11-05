@@ -6,10 +6,8 @@ import commands
 
 pomos = json.loads(commands.getoutput('timew pomos :day'))
 if pomos['status'] == 'BURST':
-    print '[POMO] Complete'
+    print '[POMO] Complete. Achieved: %(achieved)d, Combo: %(combo)d' % pomos
 elif pomos['status'] == 'INACTIVE':
     print '[POMO] Achieved: %(achieved)d, MaxCombo: %(max_combo)d' % pomos
-elif pomos['status'].startswith('BREAK'):
-    print '[POMO] %(status)s. Combo: %(combo)d' % pomos
 else:
     print '[POMO] %(status)s' % pomos

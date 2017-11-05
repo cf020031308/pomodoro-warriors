@@ -22,7 +22,9 @@ def main():
             .replace(' project:', 'project:{}.')
             .strip())
         subid = commands.getoutput(
-           r'task _get %s.project | xargs -I{} task add %s | grep -o "\d\+"' %
+           'task _get %s.project | '
+           'xargs -I{} task add %s | '
+           'grep -o "[0-9]\\+"' %
            (_id, mods))
         if subid:
             print 'Created task %s.' % subid
@@ -34,7 +36,8 @@ def main():
         pre, timew = args.split(cmd, 1)
         _id = int(pre.split()[1])
         tags, proj, uuid = commands.getoutput(
-            'task _get %s.{tags,project,uuid}' % _id).split(' ', 2)
+            'task _get %s.tags %s.project %s.uuid' % (_id, _id, _id)
+        ).split(' ', 2)
         tags = [t for t in tags.split(',') if t not in RESERVED_TAGS]
         while proj:
             tags.append(proj)
