@@ -23,9 +23,13 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 * [x] Timesheet Report Example.
 * [x] Mail Report Example.
 * [x] A script `scripts/recover.py` to recover data.
-* [x] A cloud-storage-cooperatively script `bootstrap.sh`.
+* [x] A cloud-storage cooperative script `bootstrap.sh`.
 
 ## Usage
+
+### Prerequisite
+
+Since pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/docs/) and [timewarrior](https://taskwarrior.org/docs/timewarrior/), the following usage goes with the hypothesis that the readers are skilled at both of them.
 
 ### `task <id> split <mods>`
 
@@ -92,7 +96,7 @@ If you are using [powerline](https://github.com/powerline/powerline) you can add
 }
 ```
 
-### Sync data in cloud storage
+### Sync data with cloud storage
 
 Take OneDrive as an example.
 
@@ -134,10 +138,10 @@ Mainly it's the combination of the GTD Theory and the Pomodoro Technology.
 
 * Track the doing task: `task <id> timew start` or `task <id> pomodoro <annotation>`.
 * Tag the interrupting emergency task with `task <id> modify +next`.
-* Take a rest in Pomodoro Mode with `timew stop pomodoro` or `timew start ks` if you want the tracker keeps tracking.
-* Stop tracking with `timew stop`.
+* Take a rest in Pomodoro Mode with `timew stop pomodoro` or `task <id> timew start` if you want the tracker keeps tracking.
+* Stop tracking: `timew stop`.
 
 ### Review
 
-* Daily: `timew day` and `timew ks_timesheet :day ks`.
-* Weekly: `timew week` and `timew ks_mail :week ks`.
+* Daily: `timew day` and `timew ks_timesheet :day`.
+* Weekly: `timew week` and `timew ks_mail :week`.
