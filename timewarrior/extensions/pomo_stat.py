@@ -1,12 +1,4 @@
-#!/usr/bin/python
-
-'''
-ACTIVE: <description>
-INACTIVE: <description>
-INACTIVE
-COMPLETE
-BREAK TO <time>
-'''
+#!/usr/local/bin/python
 
 import json
 import datetime
@@ -33,19 +25,13 @@ def stat():
     if not entries:
         return ret
 
-    ABORT = settings.POMODORO_ABORT * 60
-    COMBO = settings.POMODORO_COMBO * 60
-    INTV = settings.POMODORO_INTERVAL * 60
-    S_BREAK = settings.POMODORO_SHORT_BREAK * 60
-    L_BREAK = settings.POMODORO_LONG_BREAK * 60
-
     seconds, end, now = 0.0, None, datetime.datetime.now()
     for entry in entries + [{}]:
         start = utils.parse_utc(entry['start']) if 'start' in entry else now
         gap = (start - end).total_seconds() if end else 0.0
-        if gap == 0.0:
+        if start == end:
             ret['seconds'] += seconds
-            if seconds < INTV:
+            if seconds < settings.POMODORO_DURATION:
                 ret['status'] = 'ACTIVE'
             else:
                 ret['status'] = 'COMPLETE'
@@ -54,9 +40,9 @@ def stat():
                 if ret['max_combo'] < ret['combo']:
                     ret['max_combo'] = ret['combo']
             seconds = 0.0
-        elif seconds < INTV:
+        elif seconds < settings.POMODORO_DURATION:
             ret['interrupt'] += 1
-            if gap < ABORT:
+            if gap < settings.POMODORO_ABORT_GAP:
                 ret['status'] = 'INTERRUPT'
             else:
                 ret['status'] = 'INACTIVE'
@@ -72,9 +58,10 @@ def stat():
                 ret['max_combo'] = ret['combo']
             seconds = 0.0
             break2 = end + datetime.timedelta(seconds=(
-                S_BREAK if ret['combo'] < settings.POMODORO_BURST
-                else L_BREAK))
-            if (start - break2).total_seconds() >= COMBO:
+                settings.POMODORO_SHORT_BREAK
+                if ret['combo'] < settings.POMODORO_SET_COUNT
+                else settings.POMODORO_LONG_BREAK))
+            if (start - break2).total_seconds() >= settings.POMODORO_COMBO_GAP:
                 ret['combo'] = 0
                 ret['status'] = 'INACTIVE'
             else:

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 # coding: utf8
 
 '''
@@ -25,7 +25,7 @@ from utils import settings
 
 
 HOUR_UNIT = 0.25
-TAGS = {u'开发': 'dev', u'运维': 'ops', u'排查': 'bug'}
+TAGS = {'dev': u'开发', 'ops': u'运维', 'bug': u'排查'}
 template = jinja2.Template(u'''
 {%- macro fmt(f) %}
 {%- if f %}{{ f }}h{% else %}-{% endif %}
@@ -49,7 +49,8 @@ template = jinja2.Template(u'''
 
 
 def dumps(ret):
-    return json.dumps(ret, indent=2, sort_keys=True, ensure_ascii=False)
+    return json.dumps(
+        ret, indent=2, sort_keys=True, ensure_ascii=False).encode('utf8')
 
 
 @apply
@@ -96,8 +97,8 @@ class timesheet(object):
             'projectId': self.projects.get(
                 project, {}).get('projectId', 'self_define_project_id'),
             'projectName': self.projects.get(
-                project, {}).get('projectName', project),
-            'content': content})
+                project, {}).get('projectName', project or 'miscellaneous'),
+            'content': content or 'miscellaneous'})
         assert 200 <= resp.status_code < 300, (
             resp.status_code, resp.headers, resp.content)
         return resp
@@ -111,7 +112,7 @@ class timesheet(object):
                     params={
                         'startTime': start,
                         'endTime': end or start
-                    }).content.splitlines()]))  # }).content.splitlines()])[0])
+                    }).content.splitlines()])[0])
 
 
 # Get tracked entries
@@ -126,15 +127,15 @@ end = utils.utc2tz(min(entries[-1]['end'], configs['temp']['report']['end']))
 day = start.split('T', 1)[0]
 assert end.startswith(day), 'Only intervals within one day are supported.'
 try:
-    sheet = timesheet.get(day)
-    assert sheet  # TODO: Check if it is filled
-    print dumps(sheet, indent=2, sort_keys=True, ensure_ascii=False)
-    exit()
+    sheet = timesheet.get(day)['data']
 except:
-    pass
+    sheet = []
+
+if sheet:
+    print dumps(sheet)
+    exit()
 
 # Sum up
-total = 0.0
 groups = {}
 for entry in entries:
     if 'ks' not in entry['tags']:
@@ -142,7 +143,6 @@ for entry in entries:
     start = utils.parse_utc(entry['start'])
     end = utils.parse_utc(entry['end'])
     duration = (end - start).total_seconds()
-    total += duration
     tags, projects, uuid = [], [], ''
     for tag in entry['tags']:
         if tag == 'ks' or tag.startswith('ks.'):
@@ -188,7 +188,8 @@ for i, (project, (hour, tasks, tags)) in enumerate(sorted(
     r -= hour
     groups[project] = (
         hour,
-        template.render(tasks=tasks, tags=tags, total=total).encode('utf8'))
+        template.render(
+            tasks=tasks, tags=tags, total=hour * 3600).encode('utf8'))
 
 # Upload
 if not groups:
@@ -198,4 +199,10 @@ elif configs['confirmation'] == 'off':
         timesheet.put(day, project, hour, content)
     print dumps(timesheet.get(day))
 else:
-    print dumps(groups)
+    print '\n\n'.join(
+        '%s [%s]%s' % (
+            timesheet.projects[project]['projectName'].encode('utf8')
+            if project in timesheet.projects else None,
+            hour,
+            content)
+        for project, (hour, content) in groups.iteritems())

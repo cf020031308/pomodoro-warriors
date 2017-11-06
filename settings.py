@@ -1,4 +1,5 @@
 import os
+
 import yaml
 
 
@@ -8,12 +9,12 @@ import yaml
 # An interrupt longer than 2 minutes makes the active pomodoro aborted.
 # Reset Pomodoro Combo if a break is longer than 12 minutes.
 POMODORO_TAG = 'pomodoro'
-POMODORO_INTERVAL = 25
-POMODORO_SHORT_BREAK = 5
-POMODORO_LONG_BREAK = 25
-POMODORO_BURST = 4
-POMODORO_ABORT = 2
-POMODORO_COMBO = 10
+POMODORO_DURATION = 1500
+POMODORO_SHORT_BREAK = 300
+POMODORO_LONG_BREAK = 1500
+POMODORO_SET_COUNT = 4
+POMODORO_ABORT_GAP = 120
+POMODORO_COMBO_GAP = 300
 
 TIMESHEET_HOST = ''
 TIMESHEET_ACCOUNT = {'username': '', 'password': ''}
