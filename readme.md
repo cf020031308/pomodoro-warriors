@@ -81,7 +81,7 @@ You can also get your stat data by `timew pomos [<interval>] [<tag> ...]`.
 If you are using [tmux](https://github.com/tmux/tmux) you can append the following line to `~/.tmux.conf`:
 
 ```bash
-set-option -g status-left "#(timew pomo_status.py :day)"
+set-option -g status-left "#(timew pomo_msg.py :day)"
 ```
 
 If you are using [powerline](https://github.com/powerline/powerline) you can add this to the segments:
@@ -91,7 +91,7 @@ If you are using [powerline](https://github.com/powerline/powerline) you can add
     "function": "powerline.lib.shell.run_cmd",
     "priority": 80,
     "args": {
-        "cmd": ["timew", "pomo_status.py", ":day"]
+        "cmd": ["timew", "pomo_msg.py", ":day"]
     }
 }
 ```
