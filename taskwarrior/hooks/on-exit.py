@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 
 import os
 import commands
@@ -19,8 +19,10 @@ def main():
         mods = (
             (mods + ' ')
             .replace(' project: ', '')
-            .replace(' project:', 'project:{}.')
+            .replace(' project:', ' project:{}.')
             .strip())
+        if ' project:' not in mods:
+            mods += ' project:{}'
         subid = commands.getoutput(
            'task _get %s.project | '
            'xargs -I{} task add %s | '
