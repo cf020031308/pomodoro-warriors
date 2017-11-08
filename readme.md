@@ -24,6 +24,7 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 * [x] Mail Report Example.
 * [x] A script `scripts/recover.py` to recover data.
 * [x] A cloud-storage cooperative script `bootstrap.sh`.
+* [x] `timew alter <tag> <tag>` to start a new track with tags appended to / removed from the tags of current track.
 
 ## Usage
 

@@ -9,8 +9,8 @@ if [ $backup ]; then
     ln -sf $PWD/taskwarrior/hooks $HOME/.task/hooks
     mv $HOME/.taskrc $HOME/.taskrc.bak
     echo "include $PWD/taskwarrior/taskrc
-    context.work=+work
-    context.home=-work" > $HOME/.taskrc
+    context.work=project:ks +PROJECT
+    context.home=project.not:ks +PROJECT" > $HOME/.taskrc
 
     # timewarrior
     mv $HOME/.timewarrior $HOME/.timewarrior.bak
