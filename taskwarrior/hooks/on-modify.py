@@ -17,10 +17,10 @@ def main():
                 utils.parse_duration(task['estimate']))
         ret.append(
             'Total Duration: %s' % commands.getoutput(
-                'timew duration "%(uuid)s" from %(entry)s to %(end)s' % task))
+                'timew duration "%(uuid)s" from %(entry)s - %(end)s' % task))
     if len(ret) == 1:
         ret.append('')
-    print '\n'.join(ret)
+    print('\n'.join(ret))
 
 
 main()

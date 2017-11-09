@@ -53,7 +53,6 @@ def dumps(ret):
         ret, indent=2, sort_keys=True, ensure_ascii=False).encode('utf8')
 
 
-@apply
 class timesheet(object):
     'Knownsec Timesheet API'
     _TOKEN = None
@@ -115,6 +114,9 @@ class timesheet(object):
                     }).content.splitlines()])[0])
 
 
+timesheet = timesheet()
+
+
 # Get tracked entries
 configs, entries = utils.format_inputs()
 assert entries, 'No filtered data found in the range %s - %s.' % tuple(map(
@@ -128,11 +130,11 @@ day = start.split('T', 1)[0]
 assert end.startswith(day), 'Only intervals within one day are supported.'
 try:
     sheet = timesheet.get(day)['data']
-except:
+except Exception:
     sheet = []
 
 if sheet:
-    print dumps(sheet)
+    print(dumps(sheet))
     exit()
 
 # Sum up
@@ -184,25 +186,26 @@ for project, group in groups.iteritems():
 n, r = len(groups), 0.0
 for i, (project, (hour, tasks, tags)) in enumerate(sorted(
         groups.items(), key=lambda item: item[1][0])):
-    hour, r = round((hour + r / (n - i)) / HOUR_UNIT) * HOUR_UNIT, r + hour
+    h = hour + r / (n - i)
+    hour, r = round(h / HOUR_UNIT) * HOUR_UNIT, r + hour
     r -= hour
     groups[project] = (
         hour,
         template.render(
-            tasks=tasks, tags=tags, total=hour * 3600).encode('utf8'))
+            tasks=tasks, tags=tags, total=h * 3600).encode('utf8'))
 
 # Upload
 if not groups:
-    print 'Empty Timesheet'
+    print('Empty Timesheet')
 elif configs['confirmation'] == 'off':
     for project, (hour, content) in groups.iteritems():
         timesheet.put(day, project, hour, content)
-    print dumps(timesheet.get(day))
+    print(dumps(timesheet.get(day)))
 else:
-    print '\n\n'.join(
+    print('\n\n'.join(
         '%s [%s]%s' % (
             timesheet.projects[project]['projectName'].encode('utf8')
             if project in timesheet.projects else None,
             hour,
             content)
-        for project, (hour, content) in groups.iteritems())
+        for project, (hour, content) in groups.iteritems()))
