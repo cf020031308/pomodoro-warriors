@@ -47,16 +47,6 @@ def main():
         tags.append(uuid)
         tags = ' '.join('"%s"' % t for t in tags)
         os.system('timew %s %s' % (timew, tags))
-    elif cmd == 'pomodoro':
-        # task <id> pomodoro <annotation>
-        pre, anno = args.split(cmd, 1)
-        if anno.strip():
-            _id = int(pre.split()[1])
-            os.system(
-                'task %(_id)s annotate "Pomodoro:%(anno)s" && '
-                'task %(_id)s timew start pomodoro' % locals())
-        else:
-            os.system('%s timew start pomodoro' % pre)
 
 
 main()

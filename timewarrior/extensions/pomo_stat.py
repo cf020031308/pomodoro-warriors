@@ -71,20 +71,10 @@ def stat():
     else:
         ret['seconds'] += seconds
 
-    entry = entries[-1]
-    for tag in entry['tags']:
-        if not utils.is_uuid(tag):
-            continue
-        task = json.loads(
-            commands.getoutput('task uuid:%s export' % tag))
-        task = task[0] if task else {}
-        for desc in reversed(task.get('annotations', [])):
-            desc = desc['description']
-            if desc.startswith('Pomodoro: '):
-                ret['desc'] = desc[len('Pomodoro: '):]
-                break
-        else:
-            ret['desc'] = task['description']
+    for tag in entries[-1]['tags']:
+        if utils.is_uuid(tag):
+            ret['desc'] = commands.getoutput('task _get %s.description' % tag)
+            break
 
     return ret
 

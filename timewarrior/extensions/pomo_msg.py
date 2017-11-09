@@ -10,4 +10,4 @@ content = '[POMO] ' + {
     'COMPLETE': 'Complete. Achieved: %(achieved)d, Combo: %(combo)d',
     'INACTIVE': 'Inactive. Achieved: %(achieved)d, MaxCombo: %(max_combo)d',
 }.get(pomos['status'], '%(status)s') % pomos
-print content.encode('utf8')[:50]
+print content[:50]

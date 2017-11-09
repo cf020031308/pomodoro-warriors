@@ -13,7 +13,7 @@ if 'end' in tracked:
     exit()
 
 tags = tracked['tags']
-for tag in utils.format_inputs()[0]['temp']['report']['tags']:
+for tag in utils.format_inputs()[0]['temp']['report']['tags'].split(','):
     while tag[0] == tag[-1] and tag[0] in '\'"':
         tag = tag[1:-1]
     (tags.remove if tag in tags else tags.append)(tag)

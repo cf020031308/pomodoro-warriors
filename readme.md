@@ -15,7 +15,6 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 * [x] `task <id> split <mods>`. Add a sub-task which blocks the given task.
 * [x] `task <id> timew ...`. A shortcut to execute `timew ... <task tags, projects, uuid>`.
 * [x] Tracking with tag `pomodoro` results in Pomodoro Mode.
-* [x] `task <id> pomodoro <annotation>`. A shortcut to annotate a task and start a pomodoro.
 * [x] Notify the status changing when in Pomodoro Mode.
 * [x] Pomodoro Report with the total count of the day and the combo.
 * [x] A UDA to store an estimate for the costing duration.
@@ -24,7 +23,7 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 * [x] Mail Report Example.
 * [x] A script `scripts/recover.py` to recover data.
 * [x] A cloud-storage cooperative script `bootstrap.sh`.
-* [x] `timew toggle <tag> <tag>` to start a new track with tags appended to / removed from the tags of current track.
+* [x] `timew toggle [<tag> ...]` to start a new track with tags appended to / removed from the tags of current track.
 
 ## Usage
 
@@ -72,10 +71,7 @@ So you can get into Pomodoro Mode when tracking a specific task in two ways:
 1. Tag with timewarrior directly and temporarily: `task <id> timew start pomodoro`.
 2. Tag the task first: `task <id> modify +pomodoro`. Then start tracking: `task <id> timew start`.
 
-And a shortcut is made for this: `task <id> pomodoro <annotation>`.  
-It annotates the task and activates Pomodoro Mode.
-
-You can also get your stat data by `timew pomos [<interval>] [<tag> ...]`.
+You can also get your stat data by `timew pomo_stat.py [<interval>] [<tag> ...]`.
 
 ### Integrate with tmux or powerline
 
@@ -137,7 +133,7 @@ Mainly it's the combination of the GTD Theory and the Pomodoro Technology.
 
 ### Do
 
-* Track the doing task: `task <id> timew start` or `task <id> pomodoro <annotation>`.
+* Track the doing task: `task <id> timew start` or `task <id> timew start pomodoro`.
 * Tag the interrupting emergency task with `task <id> modify +next`.
 * Take a rest in Pomodoro Mode with `timew stop pomodoro` or `timew toggle pomodoro` if you want the tracker keeps tracking. And then start a new pomodoro with `timew toggle pomodoro` again.
 * Stop tracking: `timew stop`.

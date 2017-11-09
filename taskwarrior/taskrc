@@ -20,4 +20,3 @@ default.command=tiny
 # placeholders for DIY commands
 report.split.columns=
 report.timew.columns=
-report.pomodoro.columns=
