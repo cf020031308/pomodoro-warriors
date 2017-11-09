@@ -24,7 +24,7 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 * [x] Mail Report Example.
 * [x] A script `scripts/recover.py` to recover data.
 * [x] A cloud-storage cooperative script `bootstrap.sh`.
-* [x] `timew alter <tag> <tag>` to start a new track with tags appended to / removed from the tags of current track.
+* [x] `timew toggle <tag> <tag>` to start a new track with tags appended to / removed from the tags of current track.
 
 ## Usage
 
@@ -139,7 +139,7 @@ Mainly it's the combination of the GTD Theory and the Pomodoro Technology.
 
 * Track the doing task: `task <id> timew start` or `task <id> pomodoro <annotation>`.
 * Tag the interrupting emergency task with `task <id> modify +next`.
-* Take a rest in Pomodoro Mode with `timew stop pomodoro` or `task <id> timew start` if you want the tracker keeps tracking.
+* Take a rest in Pomodoro Mode with `timew stop pomodoro` or `timew toggle pomodoro` if you want the tracker keeps tracking. And then start a new pomodoro with `timew toggle pomodoro` again.
 * Stop tracking: `timew stop`.
 
 ### Review
