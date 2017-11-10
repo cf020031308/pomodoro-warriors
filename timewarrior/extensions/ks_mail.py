@@ -18,6 +18,7 @@ import smtplib
 import commands
 import datetime
 import email.message
+from collections import OrderedDict
 
 import utils
 from utils import settings
@@ -25,14 +26,14 @@ from utils import settings
 
 def hierachy(task, tasks):
     'Find children according to dependencies'
-    ret = []
+    ret = OrderedDict()
     depends = task.get('depends')
     if depends:
         for uuid in depends.split(','):
-            if uuid not in tasks:
+            if uuid in tasks:
                 t = tasks.pop(uuid)
-                ret.append(hierachy(t, tasks))
-    return task['description'], ret
+                ret.update(hierachy(t, tasks))
+    return OrderedDict({task['description']: ret})
 
 
 def render(gs):
@@ -49,7 +50,7 @@ def render(gs):
 def renders(tasks):
     tasks = {task['uuid']: task for task in tasks}
     # Group by projects and dependencies
-    groups = {}
+    groups = OrderedDict()
     for uuid in sorted(tasks.keys(), key=lambda i: tasks[i]['modified']):
         if uuid not in tasks:
             continue
@@ -60,8 +61,8 @@ def renders(tasks):
         ps = project.split('.')
         gs = groups
         for p in ps[:-1]:
-            gs = gs.setdefault(p, {})
-        gs.setdefaul(ps[-1], []).append(hierachy(task, tasks))
+            gs = gs.setdefault(p, OrderedDict())
+        gs.setdefault(ps[-1], OrderedDict()).update(hierachy(task, tasks))
     return render(groups)
 
 
@@ -98,7 +99,7 @@ payload = '\n\n'.join([
         or 'ks'
     ).replace('ks', u'下周计划：', 1),
     u'jjyy:\n\t无',
-])
+]).replace('\t', '    ')
 
 # Send Mail
 msg = email.message.Message()
@@ -120,4 +121,4 @@ if configs['confirmation'] == 'off':
             for addr in msg[field].split() if addr],
         msg.as_string())
     smtp.quit()
-print msg.as_string()
+print(msg.as_string())

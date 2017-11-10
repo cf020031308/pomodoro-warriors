@@ -114,9 +114,6 @@ class timesheet(object):
                     }).content.splitlines()])[0])
 
 
-timesheet = timesheet()
-
-
 # Get tracked entries
 configs, entries = utils.format_inputs()
 assert entries, 'No filtered data found in the range %s - %s.' % tuple(map(
@@ -128,14 +125,6 @@ start = utils.utc2tz(max(
 end = utils.utc2tz(min(entries[-1]['end'], configs['temp']['report']['end']))
 day = start.split('T', 1)[0]
 assert end.startswith(day), 'Only intervals within one day are supported.'
-try:
-    sheet = timesheet.get(day)['data']
-except Exception:
-    sheet = []
-
-if sheet:
-    print(dumps(sheet))
-    exit()
 
 # Sum up
 groups = {}
@@ -195,13 +184,17 @@ for i, (project, (hour, tasks, tags)) in enumerate(sorted(
             tasks=tasks, tags=tags, total=h * 3600).encode('utf8'))
 
 # Upload
+
 if not groups:
     print('Empty Timesheet')
 elif configs['confirmation'] == 'off':
-    for project, (hour, content) in groups.iteritems():
-        timesheet.put(day, project, hour, content)
+    timesheet = timesheet()
+    if not timesheet.get(day).get('data'):
+        for project, (hour, content) in groups.iteritems():
+            timesheet.put(day, project, hour, content)
     print(dumps(timesheet.get(day)))
 else:
+    timesheet = timesheet()
     print('\n\n'.join(
         '%s [%s]%s' % (
             timesheet.projects[project]['projectName'].encode('utf8')
