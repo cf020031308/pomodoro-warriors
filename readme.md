@@ -22,8 +22,33 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 * [x] Timesheet Report Example.
 * [x] Mail Report Example.
 * [x] A script `scripts/recover.py` to recover data.
-* [x] A cloud-storage cooperative script `bootstrap.sh`.
+* [x] A cloud-storage cooperative script `bootstrap.sh` for installation.
 * [x] `timew toggle [<tag> ...]` to start a new track with tags appended to / removed from the tags of current track.
+
+## Installation
+
+### Install to a local path
+
+1. Run `./bootstrap.sh`;
+2. Install [taskwarrior](https://taskwarrior.org/download/);
+3. Install [timewarrior](https://taskwarrior.org/docs/timewarrior/download.html).
+
+### Install with cloud storage services
+
+Take OneDrive as an example and suppose you've already installed both taskwarrior and timewarrior:
+
+```bash
+./bootstrap.sh ~/OneDrive/task
+```
+
+### 关于网盘
+
+对于国内用户，我非常推荐使用[坚果云](https://www.jianguoyun.com)。对比 OneDrive 等大厂产品的优势如下：
+
+* 全平台：我因此几个不同系统的电脑有相同的开发环境和数据。
+* 国内网络：速度快，不用翻墙。
+* 数据有多个版本供回滚：`taskwarrior` 有时候数据会出问题，我因此还写了 `scripts/recover.py`，有了坚果云就用不到了。
+* 配置灵活：不需要像 `bootstrap.sh` 里那样把数据放到同步文件夹里，而是配置哪些文件（夹）是要同步的。
 
 ## Usage
 
@@ -92,23 +117,6 @@ If you are using [powerline](https://github.com/powerline/powerline) you can add
     }
 }
 ```
-
-### Sync data with cloud storage
-
-Take OneDrive as an example.
-
-```bash
-./bootstrap.sh ~/OneDrive/task
-```
-
-### 关于网盘
-
-对于国内用户，我非常推荐使用[坚果云](https://www.jianguoyun.com)。对比 OneDrive 等大厂产品的优势如下：
-
-* 全平台：我因此几个不同系统的电脑有相同的开发环境和数据。
-* 国内网络：速度快，不用翻墙。
-* 数据有多个版本供回滚：`taskwarrior` 有时候数据会出问题，我因此还写了 `scripts/recover.py`，有了坚果云就用不到了。
-* 配置灵活：不需要像 `bootstrap.sh` 里那样把数据放到同步文件夹里，而是配置哪些文件（夹）是要同步的。
 
 ## Example Workflow
 

@@ -16,8 +16,9 @@ if [ $backup ]; then
     mv $HOME/.timewarrior $HOME/.timewarrior.bak
     mkdir $HOME/.timewarrior
     ln -sf $backup/time $HOME/.timewarrior/data
-    ln -sf $PWD/timewarrior.cfg $HOME/.timewarrior/timewarrior.cfg
-    ln -sf $PWD/extensions $HOME/.timewarrior/extensions
+    ln -sf $PWD/timewarrior/timewarrior.cfg $HOME/.timewarrior/timewarrior.cfg
+    ln -sf $PWD/timewarrior/extensions $HOME/.timewarrior/extensions
 else
-    echo "No Backup Path Inputted."
+	ln -s $PWD/taskwarrior/ $HOME/.task
+	ln -s $PWD/timewarrior/ $HOME/.timewarrior
 fi
