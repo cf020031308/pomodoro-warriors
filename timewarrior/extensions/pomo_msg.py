@@ -9,5 +9,5 @@ content = '[POMO] ' + {
     'INTERRUPT': 'Interrupt-%(combo)s: %(desc)s',
     'COMPLETE': 'Complete. Achieved: %(achieved)d, Combo: %(combo)d',
     'INACTIVE': 'Inactive. Achieved: %(achieved)d, MaxCombo: %(max_combo)d',
-}.get(pomos['status'], '%(status)s') % pomos
-print content[:50]
+}.get(pomos['status'], '%(status)s, Combo: %(combo)d') % pomos
+print(content)
