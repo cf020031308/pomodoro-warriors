@@ -46,7 +46,7 @@ def main():
             proj = proj.rpartition('.')[0]
         tags.append(uuid)
         tags = ' '.join('"%s"' % t for t in tags)
-        os.system('timew %s %s' % (timew, tags))
+        os.system('timew %s %s && task %s start' % (timew, tags, _id))
 
 
 main()
