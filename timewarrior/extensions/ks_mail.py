@@ -33,7 +33,8 @@ def hierachy(task, tasks):
             if uuid in tasks:
                 t = tasks.pop(uuid)
                 ret.update(hierachy(t, tasks))
-    return OrderedDict({task['description']: ret})
+    desc = ('! ' if task['status'] == 'active' else '') + task['description']
+    return OrderedDict({desc: ret})
 
 
 def render(gs):
@@ -94,7 +95,9 @@ payload = '\n\n'.join([
     # Todos
     (
         renders(json.loads(commands.getoutput(
-            'task project:ks +PEDING scheduled.before:%sday export' %
+            'task '
+            'project:ks "( +ACTIVE or ( +PENDING scheduled.before:%sday ) )" '
+            'export' %
             max(1, (end - start).days))))
         or 'ks'
     ).replace('ks', u'下周计划：', 1),

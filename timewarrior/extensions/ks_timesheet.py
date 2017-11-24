@@ -96,7 +96,7 @@ class timesheet(object):
             'projectId': self.projects.get(
                 project, {}).get('projectId', 'self_define_project_id'),
             'projectName': self.projects.get(
-                project, {}).get('projectName', project or 'miscellaneous'),
+                project, {}).get('projectName', project or 'misc'),
             'content': content or 'miscellaneous'})
         assert 200 <= resp.status_code < 300, (
             resp.status_code, resp.headers, resp.content)
@@ -148,12 +148,20 @@ for entry in entries:
             project = settings.TIMESHEET_MAP[project]
             break
     else:
-        project = None
+        project = 'misc' if project else ''
     group = groups.setdefault(project, [0.0, {}, {}])
     group[0] += duration
     group[1][uuid] = group[1].get(uuid, 0.0) + duration
     for tag in tags:
         group[2][tag] = group[2].get(tag, 0.0) + duration / len(tags)
+
+# Merge Unprojected tasks to the project with most time
+unp = groups.pop('', [0.0, {}, {}])
+mtg = groups[max(groups, key=lambda g: g[0])]
+mtg[0] += unp[0]
+for i in (1, 2):
+    for k, v in unp[i].iteritems():
+        mtg[i][k] = mtg[i].get(k, 0.0) + v
 
 # Get related tasks
 for project, group in groups.iteritems():
