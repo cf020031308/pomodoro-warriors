@@ -29,8 +29,6 @@ Take OneDrive as an example and suppose you've already installed both taskwarrio
 
 ## Usage
 
-### Prerequisite
-
 Since pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/docs/) and [timewarrior](https://taskwarrior.org/docs/timewarrior/), the following usages go with the hypothesis that the readers are skilled at both of them.
 
 ### 1. `task <id> split <mods>`
@@ -127,11 +125,6 @@ Mainly it's the combination of the GTD Theory and the Pomodoro Technology.
 * Plan what you want to do at the beginning of a day. Use `task <id> start` or add due dates to make the tasks obvious in your task list.
 
 ### Do
-
-* Track the doing task: `task <id> timew start` or `task <id> timew start pomodoro`.
-* Tag the interrupting emergency task with `task <id> modify +next`.
-* Take a rest in Pomodoro Mode with `timew stop pomodoro` or `timew toggle pomodoro` if you want the tracker keeps tracking. And then start a new pomodoro with `timew toggle pomodoro` again.
-* Stop tracking: `timew stop`.
 
 * normal way
     + `task <id> timew start`. Start a task and track it.
