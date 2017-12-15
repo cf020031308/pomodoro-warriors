@@ -76,7 +76,7 @@ These two following reports are available only in my own work, but may be nice e
 
 Other reports:
 
-* `timew current`. Show info of current tracking task.
+* `timew last`. Show info of current tracking or last tracked task.
 * When a task is done or deleted, show it's tracked time.
 * `timew pomo_stat`. Export statistics on Pomodoro Mode.
 * `timew pomo_msg`. Show current state in Pomodoro Mode. Can be integrated with `tmux` or `powerline`.
