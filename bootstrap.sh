@@ -1,24 +1,13 @@
-backup=$1
-if [ $backup ]; then
-    # taskwarrior
-    mkdir -p backup
-    mv $HOME/.task $HOME/.task.bak
-    mkdir $HOME/.task
-    ln -sf $backup/task/completed.data $HOME/.task/completed.data
-    ln -sf $backup/task/pending.data $HOME/.task/pending.data
-    ln -sf $PWD/taskwarrior/hooks $HOME/.task/hooks
-    mv $HOME/.taskrc $HOME/.taskrc.bak
-    echo "include $PWD/taskwarrior/taskrc
-    context.work=project:ks +PROJECT
-    context.home=project.not:ks +PROJECT" > $HOME/.taskrc
+ln -s $PWD/taskwarrior/ $HOME/.task
+ln -s $PWD/timewarrior/ $HOME/.timewarrior
+echo "include ~/.task/taskrc
+context.inbox=-PROJECT
+context.work=project:ks +PROJECT
+context.home=project.not:ks +PROJECT" > ~/.taskrc
 
-    # timewarrior
-    mv $HOME/.timewarrior $HOME/.timewarrior.bak
-    mkdir $HOME/.timewarrior
-    ln -sf $backup/time $HOME/.timewarrior/data
-    ln -sf $PWD/timewarrior/timewarrior.cfg $HOME/.timewarrior/timewarrior.cfg
-    ln -sf $PWD/timewarrior/extensions $HOME/.timewarrior/extensions
-else
-	ln -s $PWD/taskwarrior/ $HOME/.task
-	ln -s $PWD/timewarrior/ $HOME/.timewarrior
+if [ $1 ] then
+    mkdir -p $1
+    ln -sf $1/task/completed.data $HOME/.task/completed.data
+    ln -sf $1/task/pending.data $HOME/.task/pending.data
+    ln -sf $1/time $HOME/.timewarrior/data
 fi
