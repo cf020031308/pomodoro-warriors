@@ -59,7 +59,7 @@ def stat():
             seconds = 0.0
             break2 = end + datetime.timedelta(seconds=(
                 settings.POMODORO_SHORT_BREAK
-                if ret['combo'] < settings.POMODORO_SET_COUNT
+                if ret['combo'] % settings.POMODORO_SET_COUNT
                 else settings.POMODORO_LONG_BREAK))
             if (start - break2).total_seconds() >= settings.POMODORO_COMBO_GAP:
                 ret['combo'] = 0
@@ -80,4 +80,4 @@ def stat():
 
 
 if __name__ == '__main__':
-    print json.dumps(stat(), indent=2, sort_keys=True)
+    print(json.dumps(stat(), indent=2, sort_keys=True))
