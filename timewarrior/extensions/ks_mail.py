@@ -96,7 +96,7 @@ payload = '\n\n'.join([
     (
         renders(json.loads(commands.getoutput(
             'task '
-            'project:ks "( +ACTIVE or ( +PENDING scheduled.before:%sday ) )" '
+            'project:ks +PENDING "( +ACTIVE or scheduled.before:%sday )" '
             'export' %
             max(1, (end - start).days))))
         or 'ks'
