@@ -23,14 +23,15 @@ class JIRA(object):
         kwargs.setdefault('verify', False)
         kwargs.setdefault('allow_redirects', False)
         method, uri = endpoint.split()
-        return self.session.request(method.lower(), self.host + uri, **kwargs)
+        resp = self.session.request(method.lower(), self.host + uri, **kwargs)
+        return resp
 
     def Transition(self, task):
         return {
-            'name': (
-                u'正处理' if 'start' in task
-                else '已完成' if task['status'] == 'completed'
-                else u'将要做'
+            'id': (
+                '21' if 'start' in task
+                else '31' if task['status'] == 'completed'
+                else '11'
             ),
         }
 
@@ -98,18 +99,22 @@ class JIRA(object):
             return '%s created on Jira' % key
 
     def update_issue(self, prior, task):
-        endpoint = 'PUT /rest/api/2/issue/%s' % task[KEY]
+        key = task[KEY]
+
         payload = {'fields': self.Fields(task)}
         update = self.Update(prior, task)
         if update:
             payload['update'] = update
+        self.jira('PUT /rest/api/2/issue/%s' % key, json=payload)
+
         pt = self.Transition(prior)
         transition = self.Transition(task)
-        if pt['name'] != transition['name']:
+        if pt['id'] != transition['id']:
             payload['transition'] = transition
-            endpoint += '/transitions'
-        self.jira(endpoint, json=payload)
-        return '%s synced to Jira' % task[KEY]
+            self.jira(
+                'POST /rest/api/2/issue/%s/transitions' % key,
+                json={'transition': transition})
+        return '%s synced to Jira' % key
 
     def delete_issue(self, key):
         resp = self.jira('DELETE /rest/api/2/issue/%s' % key)

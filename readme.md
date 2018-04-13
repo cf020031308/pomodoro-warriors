@@ -1,142 +1,27 @@
-# Pomodoro-warriors
+这个分支是我在 ks 工作使用的。请先阅读 master 分支文档。
 
-[中文文档](./读我.md)
+## jira
 
-## About
+配置 `settings.py` 中的 JIRA 为 `https://user:passwd@jira`
 
-Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/docs/) and [timewarrior](https://taskwarrior.org/docs/timewarrior/) which helps you to:
+`t <id> modify jira:<projectKey> @:JohnSmith` 会在 jira 上创建一个 `<projectKey>-<number>`（如 MYPROJECT-11） 的 issue 并分配给 JohnSmith（默认分配给自己），并加到相应的 sprint 中。
 
-* Split tasks into smaller ones.
-* Track the time spent on every task.
-* Do in Pomodoro Mode.
-* Review and report in various ways.
+也可以 `t <id> modify jira:<projectKey>-<number>` 配置一个已有 issue。
 
-## Installation
+每次修改会同步至 jira。
 
-### Install to local path
+## 工时系统
 
-1. Run `./bootstrap.sh`;
-2. Install [taskwarrior](https://taskwarrior.org/download/);
-3. Install [timewarrior](https://taskwarrior.org/docs/timewarrior/download.html).
+`timew ks_timesheet :day :yes`
 
-### Install with cloud storage services
+需要配置 `settings.py` 中 TIMESHEET 相关。
 
-Take OneDrive as an example and suppose you've already installed both taskwarrior and timewarrior:
+不带 `:yes` 时只在本地预览。
 
-```bash
-./bootstrap.sh ~/OneDrive/task
-```
+## 周报
 
-## Usage
+`timew ks_mail :week :yes`
 
-Since pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/docs/) and [timewarrior](https://taskwarrior.org/docs/timewarrior/), the following usages go with the hypothesis that the readers are skilled at both of them.
+需要配置 `settings.py` 中 MAIL 相关。
 
-### 1. `task <id> split <mods>`
-
-Create a new subtask with `<mods>` which blocks the former one.
-
-If a project name is given to the subtask. The project name of the parent task is prepended to it to make it in hierarchy.  
-Else, the project name of the subtask is simply inherited from the parent task.
-
-Therefor, a task with no project cannot be splitted.
-
-For example.
-
-```bash
->>> task add project:test "I'm a parent task"
-Created task 1.
->>> task 1 split +next "I'm a child task"
-Created task 2.
->>> task 1 split project:sub "I'm another child task"
-Created task 3.
->>> task _get 1.depends
-b4eb87e6-54f5-422e-939a-f03c673de23e,8dd2e258-525f-4ff0-a7dc-b80fbca8387c
->>> task _get {2,3}.project
-test test.sub
-```
-
-### 2. `task <id> timew ...`
-
-This is a shortcut to execute `timew ... <task tags, projects, uuid>` which makes the tracking and reporting of tasks much more convenient.
-
-E.g. `task <id> timew start`.
-
-### 3. Pomodoro Mode
-
-Tracking with a special tag `pomodoro` tells timewarrior that you are in Pomodoro Mode.
-
-So you can start a Pomodoro when doing a specific task by executing `task <id> timew start pomodoro`.
-
-### 4. Reports
-
-These two following reports are available only in my own work, but may be nice examples to you.
-
-* `timew ks_timesheet`. Upload working data to timesheet system every day.
-* `timew ks_mail`. Send overview to my leader every week.
-
-Other reports:
-
-* `timew last`. Show info of current tracking or last tracked task.
-* When a task is done or deleted, show it's tracked time.
-* `timew pomo_stat`. Export statistics on Pomodoro Mode.
-* `timew pomo_msg`. Show current state in Pomodoro Mode. Can be integrated with `tmux` or `powerline`.
-
-If you are using [tmux](https://github.com/tmux/tmux) you can append the following line to `~/.tmux.conf`:
-
-```bash
-set-option -g status-left "#(timew pomo_msg.py :day)"
-```
-
-If you are using [powerline](https://github.com/powerline/powerline) you can add this to the segments:
-
-```json
-{
-    "function": "powerline.lib.shell.run_cmd",
-    "priority": 80,
-    "args": {
-        "cmd": ["timew", "pomo_msg.py", ":day"]
-    }
-}
-```
-
-### 5. Other improvements
-
-* `task <filter> tiny`. Display tasks in tiny spaces like panes in tmux.
-* A User Defined Attribute `estimate` to store an estimate for the costing duration of a task.
-* `timew toggle [<tag> ...]`. Start a new track with tags appended to / removed from the tags of current track.
-
-## Example Workflow
-
-Mainly it's the combination of the GTD Theory and the Pomodoro Technology.
-
-### Collect
-
-* `task add <desc>`
-
-### Process
-
-1. Get stuff with `task -PROJECT` and process the pieces one by one;
-2. Put the measurable goals in annotation by `task <id> annotate <anno>` (or description if it's short) and set project, priority, scheduled, due, etc with `task <id> modify <mods>`;
-3. Split the task into detailed subtasks with `task <id> split <mods>`. The more actionable the subtasks are the better;
-4. Estimate the number of pomodoros every subtask would take. If any one is going to cost more than 8, keep splitting it. Else, record it with `task <id> modify estimate:<duration>`.
-
-### Arrange
-
-* Plan what you want to do at the beginning of a day. Use `task <id> start` or add due dates to make the tasks obvious in your task list.
-
-### Do
-
-* normal way
-    + `task <id> timew start`. Start a task and track it.
-    + `timew stop`. Stop tracking a task.
-    + `task <id> done`. Complete a task and stop tracking it.
-* Pomodoro Mode
-    + `task <id> timew start pomodoro`. Start a pomodoro on a task.
-    + `timew toggle pomodoro` or `timew stop pomodoro`. Stop a pomodoro and keep tracking the task.
-    + If something important interrupts, use `task <id> modify +next` to boost its urgency. After the current pomodoro, handle it.
-    + With the integration of tmux or powerline, the state of Pomodoro Mode is displayed in the status-line.
-
-### Review
-
-* Daily: `timew day` and `timew ks_timesheet :day`.
-* Weekly: `timew week` and `timew ks_mail :week`.
+不带 `:yes` 时只在本地预览。
