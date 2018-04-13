@@ -10,9 +10,15 @@ include ~/Nutstore/task/holidays.rc
 uda.estimate.type=duration
 uda.estimate.label=Estimate
 
+uda.@.type=string
+uda.@.label=Assignee
+
+uda.jira.type=string
+uda.jira.label=Jira
+
 report.tiny.description="a next-like tiny report to display in tiny panels"
-report.tiny.columns=id,project,estimate,description.truncated_count
-report.tiny.labels=ID,Project,E,Description
+report.tiny.columns=id,project,estimate,@,jira,description.truncated_count
+report.tiny.labels=ID,Project,Est,@,Jira,Description
 report.tiny.filter=status:pending limit:page
 report.tiny.sort=urgency-
 default.command=tiny

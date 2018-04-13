@@ -3,13 +3,17 @@
 import json
 import commands
 
+import jira
 import utils
 
 
 def main():
     inputs = utils.format_inputs()
     task = inputs['task']
+    jret = jira.sync()
     ret = [json.dumps(task)]
+    if jret:
+        ret.append(jret)
     if 'end' in task and 'end' not in inputs['prior']:
         timew = json.loads(commands.getoutput('timew get dom.tracked.1.json'))
         cmd = 'timew duration "%(uuid)s" from %(entry)s - %(end)s' % task

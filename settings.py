@@ -26,6 +26,8 @@ MAIL_ACCOUNT = ['cf020031308@163.com', '']
 MAIL_TO = ['cf020031308@163.com']
 MAIL_CC = []
 
+JIRA = ''
+
 # load settings from yaml
 ypath = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'settings.yaml')
