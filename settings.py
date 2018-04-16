@@ -16,17 +16,7 @@ POMODORO_SET_COUNT = 4
 POMODORO_ABORT_GAP = 120
 POMODORO_COMBO_GAP = 300
 
-TIMESHEET_HOST = ''
-TIMESHEET_ACCOUNT = {'username': '', 'password': ''}
-TIMESHEET_MAP = {}
-
-MAIL_AUTHOR = ''
-MAIL_SERVER = ['smtp.163.com', 465]
-MAIL_ACCOUNT = ['cf020031308@163.com', '']
-MAIL_TO = ['cf020031308@163.com']
-MAIL_CC = []
-
-# load settings from yaml
+# load settings from settings.yaml, which is ignoed in git
 ypath = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'settings.yaml')
 if os.path.isfile(ypath):

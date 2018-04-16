@@ -69,17 +69,11 @@ So you can start a Pomodoro when doing a specific task by executing `task <id> t
 
 ### 4. Reports
 
-These two following reports are available only in my own work, but may be nice examples to you.
-
-* `timew ks_timesheet`. Upload working data to timesheet system every day.
-* `timew ks_mail`. Send overview to my leader every week.
-
-Other reports:
-
 * `timew last`. Show info of current tracking or last tracked task.
 * When a task is done or deleted, show it's tracked time.
 * `timew pomo_stat`. Export statistics on Pomodoro Mode.
 * `timew pomo_msg`. Show current state in Pomodoro Mode. Can be integrated with `tmux` or `powerline`.
+* `timew duration`. Output the total duration.
 
 If you are using [tmux](https://github.com/tmux/tmux) you can append the following line to `~/.tmux.conf`:
 
@@ -98,6 +92,8 @@ If you are using [powerline](https://github.com/powerline/powerline) you can add
     }
 }
 ```
+
+See branch [ks](https://github.com/cf020031308/pomodoro-warriors/tree/ks) to view my personal reports as examples.
 
 ### 5. Other improvements
 
@@ -138,5 +134,5 @@ Mainly it's the combination of the GTD Theory and the Pomodoro Technology.
 
 ### Review
 
-* Daily: `timew day` and `timew ks_timesheet :day`.
-* Weekly: `timew week` and `timew ks_mail :week`.
+* Daily: `timew day`
+* Weekly: `timew week`
