@@ -23,8 +23,7 @@ class JIRA(object):
         kwargs.setdefault('verify', False)
         kwargs.setdefault('allow_redirects', False)
         method, uri = endpoint.split()
-        resp = self.session.request(method.lower(), self.host + uri, **kwargs)
-        return resp
+        return self.session.request(method.lower(), self.host + uri, **kwargs)
 
     def Transition(self, task):
         return {
@@ -87,7 +86,7 @@ class JIRA(object):
             self.jira(
                 'PUT /rest/greenhopper/1.0/sprint/rank',
                 json={
-                    'idOrKey': [key],
+                    'idOrKeys': [key],
                     'customFieldId': '10009',
                     'sprintId': SprintId,
                     'addToBacklog': False,
