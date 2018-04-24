@@ -26,13 +26,10 @@ class JIRA(object):
         return self.session.request(method.lower(), self.host + uri, **kwargs)
 
     def Transition(self, task):
-        return {
-            'id': (
-                '21' if 'start' in task
-                else '31' if task['status'] == 'completed'
-                else '11'
-            ),
-        }
+        return (
+            'inprogress' if 'start' in task
+            else 'done' if task['status'] == 'completed'
+            else 'todo')
 
     def Fields(self, task):
         tags = task.get('tags', [])
@@ -108,11 +105,19 @@ class JIRA(object):
 
         pt = self.Transition(prior)
         transition = self.Transition(task)
-        if pt['id'] != transition['id']:
-            payload['transition'] = transition
-            self.jira(
-                'POST /rest/api/2/issue/%s/transitions' % key,
-                json={'transition': transition})
+        if pt != transition:
+            url = '/rest/api/2/issue/%s/transitions' % key
+            payload = {
+                'transition': {
+                    'id': trans['id']
+                    for trans in self.jira('GET ' + url).json()['transitions']
+                    if transition == ''.join(
+                            c.lower()
+                            for c in trans['to']['name']
+                            if c not in ' -_')
+                }
+            }
+            self.jira('POST ' + url, json=payload)
         return '%s synced to Jira' % key
 
     def delete_issue(self, key):
