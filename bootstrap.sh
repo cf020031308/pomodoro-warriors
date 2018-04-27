@@ -1,9 +1,6 @@
 ln -s $PWD/taskwarrior/ $HOME/.task
 ln -s $PWD/timewarrior/ $HOME/.timewarrior
-echo "include ~/.task/taskrc
-context.inbox=-PROJECT
-context.work=project:ks or due.before:tomorrow
-context.home=project.not:ks +PROJECT" > ~/.taskrc
+echo "include ~/.task/taskrc" > ~/.taskrc
 
 if [ $1 ]; then
     mkdir -p $1/task/time

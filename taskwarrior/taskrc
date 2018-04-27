@@ -20,3 +20,7 @@ default.command=tiny
 # placeholders for DIY commands
 report.split.columns=
 report.timew.columns=
+
+context.inbox=-PROJECT
+context.backlog=+PROJECT -SCHEDULED -ACTIVE
+context.kanban=( ( +PROJECT ( +SCHEDULED or +ACTIVE ) ) or due.before:tomorrow )
