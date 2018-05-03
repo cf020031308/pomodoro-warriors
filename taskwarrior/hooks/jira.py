@@ -25,12 +25,6 @@ class JIRA(object):
         method, uri = endpoint.split()
         return self.session.request(method.lower(), self.host + uri, **kwargs)
 
-    def Transition(self, task):
-        return (
-            'inprogress' if 'start' in task
-            else 'done' if task['status'] == 'completed'
-            else 'todo')
-
     def Fields(self, task):
         tags = task.get('tags', [])
         ret = {
@@ -56,11 +50,38 @@ class JIRA(object):
 
     def Update(self, prior, task):
         ret = {}
+
+        fields = self.Fields(task)
+        if self.Fields(prior) != fields:
+            ret['fields'] = fields
+
         if len(task.get('annotations', [])) > len(
                 prior.get('annotations', [])):
-            ret['comment'] = [{
+            ret.setdefault('update', {})['comment'] = [{
                 'add': {'body': task['annotations'][-1]['description']}}]
+
         return ret
+
+    def Transition(self, prior, task):
+        ts = [
+            (
+                'inprogress' if 'start' in t
+                else 'done' if t['status'] == 'completed'
+                else 'todo'
+            ) for t in (prior, task)]
+        if ts[0] == ts[1]:
+            return {}
+
+        trans = self.jira(
+            'GET /rest/api/2/issue/%s/transitions' % task[KEY]
+        ).json()['transitions']
+        for tran in trans:
+            t = ''.join(
+                c for c in tran['to']['name'] if c not in ' -_').lower()
+            if t == ts[1]:
+                return {'transition': {'id': tran['id']}}
+
+        return {}
 
     def create_issue(self, task):
         projectKey = task[KEY]
@@ -97,28 +118,16 @@ class JIRA(object):
     def update_issue(self, prior, task):
         key = task[KEY]
 
-        payload = {'fields': self.Fields(task)}
         update = self.Update(prior, task)
         if update:
-            payload['update'] = update
-        self.jira('PUT /rest/api/2/issue/%s' % key, json=payload)
+            self.jira('PUT /rest/api/2/issue/%s' % key, json=update)
 
-        pt = self.Transition(prior)
-        transition = self.Transition(task)
-        if pt != transition:
-            url = '/rest/api/2/issue/%s/transitions' % key
-            payload = {
-                'transition': {
-                    'id': trans['id']
-                    for trans in self.jira('GET ' + url).json()['transitions']
-                    if transition == ''.join(
-                            c.lower()
-                            for c in trans['to']['name']
-                            if c not in ' -_')
-                }
-            }
-            self.jira('POST ' + url, json=payload)
-        return '%s synced to Jira' % key
+        transition = self.Transition(prior, task)
+        if transition:
+            self.jira(
+                'POST /rest/api/2/issue/%s/transitions' % key,
+                json=transition)
+        return ('%s synced to Jira' % key) if update or transition else ''
 
     def delete_issue(self, key):
         resp = self.jira('DELETE /rest/api/2/issue/%s' % key)

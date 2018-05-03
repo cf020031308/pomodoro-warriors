@@ -142,14 +142,14 @@ for entry in entries:
             uuid = tag
         elif tag in TAGS:
             tags.append(TAGS[tag])
+    projectKey = ''
     for project in sorted(projects, reverse=True):
-        project = project[3:]
         if project in settings.TIMESHEET_MAP:
-            project = settings.TIMESHEET_MAP[project]
-            break
+            projectKey = settings.TIMESHEET_MAP[project]
     else:
-        project = 'misc' if project else ''
-    group = groups.setdefault(project, [0.0, {}, {}])
+        if project and not projectKey:
+            projectKey = 'misc'
+    group = groups.setdefault(projectKey, [0.0, {}, {}])
     group[0] += duration
     group[1][uuid] = group[1].get(uuid, 0.0) + duration
     for tag in tags:
