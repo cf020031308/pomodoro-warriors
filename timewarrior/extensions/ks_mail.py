@@ -33,7 +33,7 @@ def hierachy(task, tasks):
             if uuid in tasks:
                 t = tasks.pop(uuid)
                 ret.update(hierachy(t, tasks))
-    desc = ('! ' if 'start' in task['status'] else '') + task['description']
+    desc = ('[Doing] ' if 'start' in task else '') + task['description']
     if task.get('jira'):
         desc += ' (#%s)' % task['jira']
     return OrderedDict({desc: ret})

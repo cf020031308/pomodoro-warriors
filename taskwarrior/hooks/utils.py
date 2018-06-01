@@ -62,7 +62,4 @@ def format_inputs():
         inputs['prior'] = json.loads(sys.stdin.readline())
         inputs['task'] = json.loads(sys.stdin.readline())
 
-    if inputs.get('task'):
-        with open('/Users/roy/test.json', 'w') as file:
-            file.write(json.dumps(inputs, indent=2))
     return inputs

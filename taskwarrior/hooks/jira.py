@@ -65,7 +65,7 @@ class JIRA(object):
     def Transition(self, prior, task):
         ts = [
             (
-                'inprogress' if 'start' in t
+                'inprogress' if 'start' in t and t['status'] != 'waiting'
                 else 'done' if t['status'] == 'completed'
                 else 'todo'
             ) for t in (prior, task)]
@@ -136,6 +136,16 @@ class JIRA(object):
         else:
             return 'Failed to delete %s on Jira: %s' % (key, resp.content)
 
+    def pull_issue(self, task):
+        key = task[KEY]
+        resp = self.jira('GET /rest/api/2/issue/%s' % key)
+        if resp.status_code < 300:
+            task['description'] = resp.json()['fields']['summary']
+            return '%s synced from Jira' % key
+        else:
+            del task[KEY]
+            return 'Failed to sync %s from Jira: %s' % (key, resp.content)
+
 
 def sync():
     inputs = utils.format_inputs()
@@ -151,12 +161,12 @@ def sync():
     prior = inputs.get('prior', {})
     key = task.get(KEY)
     if not key:
-        key = prior.get(KEY)
-        if key and '-' in key:
-            return jira.delete_issue(key)
+        pass
     elif '-' not in key:
         return jira.create_issue(task)
     elif task['status'] == 'deleted':
         return jira.delete_issue(key)
+    elif key != prior.get(KEY):
+        return jira.pull_issue(task)
     elif prior:
         return jira.update_issue(prior, task)
