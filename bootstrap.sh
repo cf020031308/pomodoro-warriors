@@ -1,12 +1,21 @@
-dir="$0"
-while [ -L "${dir}" ]
-do dir=$(readlink "${dir}")
-done
-dir=$(cd $(dirname "${dir}"); pwd)
+#!/bin/sh -
+
+function realdir() {
+    fpath="$1"
+    while [ -L "${fpath}" ]
+    do fpath=$(readlink "${fpath}")
+    done
+    if [ ! -d "${fpath}" ]; then
+        fpath=$(dirname "${fpath}")
+    fi
+    cd "${fpath}"
+    pwd
+}
 
 if [ "$1" ]; then
-    taskd="$1/taskwarrior"
-    timed="$1/timewarrior"
+    dst=$(realdir "$1")
+    taskd="${dst}/taskwarrior"
+    timed="${dst}/timewarrior"
     mkdir -p "${taskd}" "${timed}"
     if [ -d "$HOME/.task" ]; then
         cp "$HOME/.task/*.data" "${taskd}"
@@ -27,6 +36,7 @@ else
     mkdir -p "${taskd}" "${timed}"
 fi
 
+dir=$(realdir "$0")
 if [ -d "${taskd}/hooks" ]; then
     mv "${taskd}/hooks" "${taskd}/hooks.bak"
 fi
