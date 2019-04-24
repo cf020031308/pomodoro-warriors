@@ -15,7 +15,7 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 
 ### Install to local path
 
-1. Run `./bootstrap.sh`;
+1. Run `python2 bootstrap.py`;
 2. Install [taskwarrior](https://taskwarrior.org/download/);
 3. Install [timewarrior](https://taskwarrior.org/docs/timewarrior/download.html).
 
@@ -24,7 +24,7 @@ Pomodoro-warriors is the integration of [taskwarrior](https://taskwarrior.org/do
 Take OneDrive as an example and suppose you've already installed both taskwarrior and timewarrior:
 
 ```bash
-./bootstrap.sh ~/OneDrive/task
+python2 bootstrap.py ~/OneDrive/task
 ```
 
 ## Usage

@@ -5,7 +5,6 @@ search.case.sensitive=no
 weekstart=Monday
 calendar.details=full
 calendar.holidays=sparse
-include ~/Nutstore/task/holidays.rc
 
 uda.estimate.type=duration
 uda.estimate.label=Estimate
