@@ -40,7 +40,7 @@ def main():
         tags, proj, uuid = commands.getoutput(
             'task _get %s.tags %s.project %s.uuid' % (_id, _id, _id)
         ).split(' ', 2)
-        tags = [t for t in tags.split(',') if t not in RESERVED_TAGS]
+        tags = [t for t in tags.split(',') if t and t not in RESERVED_TAGS]
         while proj:
             tags.append(proj)
             proj = proj.rpartition('.')[0]
