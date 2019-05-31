@@ -1,5 +1,7 @@
 这个分支是我在 ks 工作使用的。请先阅读 master 分支文档。
 
+*** 因为我已离职（大半年），这个分支不再维护了（，反正也没人用）。***
+
 ## jira
 
 配置 `settings.py` 中的 JIRA 为 `https://user:passwd@jira`
